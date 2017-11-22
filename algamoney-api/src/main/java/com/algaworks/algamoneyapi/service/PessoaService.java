@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.algamoneyapi.model.Pessoa;
@@ -15,6 +17,10 @@ public class PessoaService {
 
     @Autowired
     private PessoaRepository pessoaRepository;
+
+    public Page<Pessoa> pesquisar(String nome, Pageable pageable) {
+	return pessoaRepository.findByNomeContaining(nome, pageable);
+    }
 
     public Pessoa atualizar(Long codigo, Pessoa pessoa) {
 	Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);

@@ -25,25 +25,25 @@ import com.algaworks.algamoneyapi.repository.projection.ResumoLancamento;
 public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
     @PersistenceContext
-    private EntityManager manager;
+    private EntityManager entityManager;
 
     @Override
     public Page<Lancamento> filtrar(LancamentoFilter lancamentoFilter, Pageable pageable) {
-	CriteriaBuilder builder = manager.getCriteriaBuilder();
+	CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 	CriteriaQuery<Lancamento> criteriaQuery = builder.createQuery(Lancamento.class);
 
 	Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
 	Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
 	criteriaQuery.where(predicates);
 
-	TypedQuery<Lancamento> typedQuery = manager.createQuery(criteriaQuery);
+	TypedQuery<Lancamento> typedQuery = entityManager.createQuery(criteriaQuery);
 	adiconarRestricoesDePaginacao(typedQuery, pageable);
 	return new PageImpl<Lancamento>(typedQuery.getResultList(), pageable, getTotal(lancamentoFilter));
     }
 
     @Override
     public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
-	CriteriaBuilder builder = manager.getCriteriaBuilder();
+	CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 	CriteriaQuery<ResumoLancamento> criteriaQuery = builder.createQuery(ResumoLancamento.class);
 
 	Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
@@ -55,7 +55,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 	Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
 	criteriaQuery.where(predicates);
 
-	TypedQuery<ResumoLancamento> typedQuery = manager.createQuery(criteriaQuery);
+	TypedQuery<ResumoLancamento> typedQuery = entityManager.createQuery(criteriaQuery);
 	adiconarRestricoesDePaginacao(typedQuery, pageable);
 	return new PageImpl<ResumoLancamento>(typedQuery.getResultList(), pageable, getTotal(lancamentoFilter));
     }
@@ -84,7 +84,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
     }
 
     private Long getTotal(LancamentoFilter lancamentoFilter) {
-	CriteriaBuilder builder = manager.getCriteriaBuilder();
+	CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 	CriteriaQuery<Long> criteriaQuery = builder.createQuery(Long.class);
 	Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
 
@@ -92,7 +92,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 	criteriaQuery.where(predicates);
 	criteriaQuery.select(builder.count(root));
 
-	return manager.createQuery(criteriaQuery).getSingleResult();
+	return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
 
 }
